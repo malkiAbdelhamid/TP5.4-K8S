@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-formation-depl
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ms-formation-pod
+  template:
+    metadata:
+      labels:
+        app: ms-formation-pod
+    spec:
+      containers:
+        - name: ms-formation-container
+          image: formation-image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-srv:3306/tp-k8S
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root  
+          
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-formation-srv
+spec:
+  selector:
+    app: ms-formation-pod
+  ports:
+    - port: 8081
+      targetPort: 8080
+      protocol: TCP
+  type: LoadBalancer    
+ 

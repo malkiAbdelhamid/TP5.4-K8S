@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-scolarite-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-scolarite-pod
+  template:
+    metadata:
+      labels:
+        app: ms-scolarite-pod
+    spec:
+      containers:
+        - name: ms-scolarite-container
+          image: scolarite-image
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql-srv:3306/tp-k8S
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: root 
+          imagePullPolicy: Never
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-scolarite-srv
+spec:
+  selector:
+    app: ms-scolarite-pod
+  ports:
+    - port: 8082
+      targetPort: 8080
+      protocol: TCP
+  

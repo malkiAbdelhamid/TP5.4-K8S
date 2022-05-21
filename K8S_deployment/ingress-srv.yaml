@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example-ingress2
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: lab-k8s-2022.info
+      http:
+         paths:
+          - path: /service-formation/(.+)
+            pathType: Prefix
+            backend:
+              service:
+                 name: ms-formation-srv
+                 port: 
+                  number: 8081
+
+          - path: /service-scolarite/(.+)
+            pathType: Prefix
+            backend:
+              service:
+                 name: ms-scolarite-srv
+                 port: 
+                  number: 8082
+
+          
